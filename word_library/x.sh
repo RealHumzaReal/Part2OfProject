@@ -1,0 +1,12 @@
+xebec
+xenia
+xenon
+xeric
+xerus
+xoana
+xylan
+xylem
+xylol
+xylyl
+xysta
+xysti
