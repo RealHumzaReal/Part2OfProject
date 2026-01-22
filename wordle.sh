@@ -1,6 +1,7 @@
 #!/bin/bash
 
 filepath="/home/gamerwolf4512/Documents/Part2OfProject/word_library" #file path to the word library.
+attempts=0
 
 randomize_word() {
 	chosenfile=$(ls $filepath | shuf -n 1) #shuffles all files in folder and takes a random one, making it the variable
@@ -8,14 +9,17 @@ randomize_word() {
 } #shuffles word
 
 guess_word_tries(){
-	for i in {1..5}; do
-		read -p "Type word here: " answer
+	for (( i=1; i<6; )); do
+		read -p "Type word here: $i " answer
 		check_if_word_is_correct
 	done
 }
 
 check_if_word_is_correct(){
-	if [ $answer ]
+	if [ $answer == "test" ]; then
+		echo "test"
+		(( i++ ))
+	fi
 }
 
 while true; do
