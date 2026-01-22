@@ -16,7 +16,7 @@ guess_word_tries(){
 }
 
 check_if_word_is_correct(){
-	if [ $answer == "test" ]; then
+	if [ ${#answer} == 5 ]; then
 		echo "test"
 		(( i++ ))
 	fi
