@@ -11,15 +11,20 @@ randomize_word() {
 guess_word_tries(){
 	for (( i=1; i<6; )); do
 		read -p "Type word here: $i " answer
-		check_if_word_is_correct
+		check_if_word_is_in_limit
 	done
 }
 
-check_if_word_is_correct(){
+check_if_word_is_in_limit(){
 	if [ ${#answer} == 5 ]; then
-		echo "test"
-		(( i++ ))
+		check_if_word_is_in_limit
+	else
+		echo -e "What you typed in was over/under the limit\nPlease type in again!\n"
 	fi
+}
+
+check_if_word_is_in_dictionary(){
+	echo "Test"
 }
 
 while true; do
