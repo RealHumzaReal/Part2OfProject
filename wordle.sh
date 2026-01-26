@@ -2,6 +2,8 @@
 
 filepath="/home/gamerwolf4512/Documents/Part2OfProject/word_library" #file path to the word library.
 
+wordle_output=""
+
 no_color="\e[0m"
 yellow="\e[1;33m"
 green='\e[0;32m'
@@ -52,10 +54,12 @@ word_from_answer(){
 }
 
 individually_check_letters(){
-	for (( c=0; c<6; c++ ))
-		{ [ ${answer:c:1} == ${word:c:1} ] } || { [ ${answer:c:1} != ${word:c:1} ] }
+	for (( c=0; c<6; c++ )); do
+		if [ $answer == "${word:c:1}" ] && [ $wordle_output != "${word:c:1}" ]; then
+			wordle_output=$wordle_output${word:c:1}
+			echo "$wordle_output"
+		fi
 	done
-
 }
 
 #Actual code
