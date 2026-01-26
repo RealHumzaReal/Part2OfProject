@@ -55,10 +55,10 @@ word_from_answer(){
 
 individually_check_letters(){
 	for (( c=0; c<6; c++ )); do
-		if [ $answer == "${word:c:1}" ] && [ $wordle_output != "${word:c:1}" ]; then
+		if [[ $answer == *"${word:c:1}"* && $wordle_output != *"${word:c:1}"* ]]; then
 			wordle_output=$wordle_output${word:c:1}
-			echo "$wordle_output"
 		fi
+		echo "$wordle_output"
 	done
 }
 
@@ -67,5 +67,6 @@ while true; do
 	echo -e "\nWelcome to Wordle.\nYou have 5 attempts, guess them all wrong and you lose.\n"
 	sleep 1
 	randomize_word
+	echo "$word"
 	guess_word_tries
 done
