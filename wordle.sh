@@ -54,11 +54,11 @@ word_from_answer(){
 }
 
 individually_check_letters(){
-	for (( c=0; c<6; c++ )); do
-		if [[ $answer == *"${word:c:1}"* && $wordle_output != *"${word:c:1}"* ]]; then
-			wordle_output=$wordle_output${word:c:1}
+	for (( c=0; c<5; c++ )); do
+		if [[ $answer == *"${word:c:1}"* ]]; then
+			wordle_output=$green$wordle_output${word:c:1}
 		fi
-		echo "$wordle_output"
+		echo -e "$wordle_output"
 	done
 }
 
