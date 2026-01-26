@@ -57,6 +57,8 @@ individually_check_letters(){
 	for (( c=0; c<5; c++ )); do
 		if [[ $answer == *"${word:c:1}"* ]]; then
 			wordle_output=$green$wordle_output${word:c:1}
+		elif [[ $answer != *"${word:c:1}"* ]]; then
+			wordle_output=$no_color$wordle_output${answer:c:1}
 		fi
 		echo -e "$wordle_output"
 	done
