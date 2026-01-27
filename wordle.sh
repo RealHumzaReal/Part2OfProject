@@ -4,6 +4,7 @@ filepath="/home/gamerwolf4512/Documents/Part2OfProject/word_library" #file path 
 
 wordle_output=""
 
+#colors
 no_color="\e[0m"
 yellow="\e[1;33m"
 green="\e[0;32m"
@@ -40,7 +41,7 @@ check_if_word_is_in_limit(){
 
 check_if_word_is_in_word_library(){
 	if [ -e $filepath/${guess::1}.sh ]; then #if the first letter in the word is valid, meaning it exists on the dictionary. It will allow the user to continue
-		echo "it works"
+		echo "it works" #temp, will delete soon
 		check_if_word_is_in_dictionary
 	else #if the first letter is a value or symbol, it wont allow you to do anything.
 		echo -e "What you typed in was a value/symbol.\nPlease type again!\n"
@@ -56,18 +57,18 @@ check_if_word_is_in_dictionary(){
 } #checks of answer is in the dictionary
 
 word_from_answer(){
-	if [ $answer == $guess ]; then
-		echo -e "${green}$answer${no_color}\nCongradulations you guessed the word!\nWould you like to guess again?\n"
-		read -p "Just type Yes(Y) or No(N)" continue_playing
+	if [ $answer == $guess ]; then #if statement that checks if guess string is = to answer
+		echo -e "${green}$answer${no_color}\nCongradulations you guessed the word!\nWould you like to guess again?\n" #if statement true then it says this line of code
+		read -p "Just type Yes(Y) or No(N)" continue_playing #asks player if they want to continue playing
 		exit_or_continue_game
-	elif [ $answer != $guess ]; then
+	elif [ $answer != $guess ]; then #this if statement checks if your guess isnt equal to the answer (could just say else, but I may need to use it later, so i will leave it like this for now. Unless otherwise)
 		individually_check_letters
 	fi
 }
 
 individually_check_letters(){
-	for (( c=0; c<5; c++ )); do
-		if [[ ${guess:c:1} == "${answer:c:1}" ]]; then
+	for (( c=0; c<5; c++ )); do #loops for 5 times (for each letter)
+		if [[ ${guess:c:1} == "${answer:c:1}" ]]; then #this if statement checks if the guess letter is = answer letter
 			wordle_output+="$green${guess:c:1}$no_color"
 		elif [[ $answer == *"${guess:c:1}"* ]]; then
 			wordle_output+="$yellow${guess:c:1}$no_color"
