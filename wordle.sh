@@ -6,7 +6,16 @@ wordle_output=""
 
 no_color="\e[0m"
 yellow="\e[1;33m"
-green='\e[0;32m'
+green="\e[0;32m"
+
+start_of_game() {
+	echo -e "\nWelcome to Wordle.\nYou have 5 attempts, guess them all wrong and you lose.\n"
+	sleep 1
+	randomize_word
+	echo "$word"
+	guess_word_tries
+}
+
 
 randomize_word() {
 	chosenfile=$(ls $filepath | shuf -n 1) #shuffles all files in folder and takes a random one, making it the variable
@@ -48,7 +57,9 @@ check_if_word_is_in_dictionary(){
 
 word_from_answer(){
 	if [ $answer == $guess ]; then
-		echo -e "${green}$answer${no_color}\nCongradulations you guessed the word!\nWould you like to guess again?"
+		echo -e "${green}$answer${no_color}\nCongradulations you guessed the word!\nWould you like to guess again?\n"
+		read -p "Just type Yes(Y) or No(N)" continue_playing
+		exit_or_continue_game
 	elif [ $answer != $guess ]; then
 		individually_check_letters
 	fi
@@ -63,15 +74,25 @@ individually_check_letters(){
 		else
 			wordle_output+="$no_color${guess:c:1}"
 		fi
-		echo -e "$wordle_output"
 	done
+	echo -e "$wordle_output\n"
+	wordle_output=""
+	((i++))
 }
 
-#Actual code
-while true; do
-	echo -e "\nWelcome to Wordle.\nYou have 5 attempts, guess them all wrong and you lose.\n"
-	sleep 1
-	randomize_word
-	echo "$word"
-	guess_word_tries
-done
+exit_or_continue_game(){
+	case $continue_playing in
+		y|Y|yes|Yes) echo -e "\nThe game will start again then!"
+		((i=6))
+		sleep 2
+		start_of_game
+		;;
+		n|N|no|No) echo -e "\nYou have chosen to exit the game, goodbye!"
+		;;
+		*) read -p "Please re-enter your answer:" continue_playing
+		exit_or_continue_game
+		exit
+	esac
+}
+
+start_of_game
