@@ -11,6 +11,7 @@ green='\e[0;32m'
 randomize_word() {
 	chosenfile=$(ls $filepath | shuf -n 1) #shuffles all files in folder and takes a random one, making it the variable
 	answer=$(shuf -n 1 $filepath/$chosenfile) #shuffles all the words in the file and takes a random one for the wordle
+	echo "$answer"
 } #shuffles word
 
 guess_word_tries(){
@@ -55,10 +56,10 @@ word_from_answer(){
 
 individually_check_letters(){
 	for (( c=0; c<5; c++ )); do
-		if [[ $guess == "${answer:c:1}" ]]; then
-			wordle_output+="$green${answer:c:1}$no_color"
+		if [[ ${guess:c:1} == "${answer:c:1}" ]]; then
+			wordle_output+="$green${guess:c:1}$no_color"
 		elif [[ $answer == *"${guess:c:1}"* ]]; then
-			wordle_output+="$yellow${answer:c:1}$no_color"
+			wordle_output+="$yellow${guess:c:1}$no_color"
 		else
 			wordle_output+="$no_color${guess:c:1}"
 		fi
