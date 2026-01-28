@@ -10,10 +10,9 @@ yellow="\e[1;33m"
 green="\e[0;32m"
 
 start_of_game() {
-	echo -e "\nWelcome to Wordle.\nYou have 5 attempts, guess them all wrong and you lose.\n"
-	sleep 1
+	echo -e "\nWelcome to$green Wordle.$no_color\nYou have$green 5$no_color attempts, guess them all wrong and you$yellow lose.\n $no_color"
+	sleep 2
 	randomize_word
-	echo "$word"
 	guess_word_tries
 }
 
@@ -21,13 +20,16 @@ start_of_game() {
 randomize_word() {
 	chosenfile=$(ls $filepath | shuf -n 1) #shuffles all files in folder and takes a random one, making it the variable
 	answer=$(shuf -n 1 $filepath/$chosenfile) #shuffles all the words in the file and takes a random one for the wordle
-	echo "$answer"
 } #shuffles word
 
 guess_word_tries(){
 	for (( i=1; i<6; )); do #loops for every unless i is greater then 6. i is supposed to represent the gueses
 		read -p "Type word here ($i): " guess #reads users guess and i indicates what attempt there on
 		check_if_word_is_in_limit
+		if [ $i == 6 ]; then
+			echo -e "You have failed to find the word!\nThe word was $answer\nWould you like to play again? Yes(Y) No(N)"
+			exit_or_continue_game
+		fi
 	done
 } #amount of attempts
 
@@ -41,7 +43,6 @@ check_if_word_is_in_limit(){
 
 check_if_word_is_in_word_library(){
 	if [ -e $filepath/${guess::1}.sh ]; then #if the first letter in the word is valid, meaning it exists on the dictionary. It will allow the user to continue
-		echo "it works" #temp, will delete soon
 		check_if_word_is_in_dictionary
 	else #if the first letter is a value or symbol, it wont allow you to do anything.
 		echo -e "What you typed in was a value/symbol.\nPlease type again!\n"
@@ -68,17 +69,21 @@ word_from_answer(){
 
 individually_check_letters(){
 	for (( c=0; c<5; c++ )); do #loops for 5 times (for each letter)
-		if [[ ${guess:c:1} == "${answer:c:1}" ]]; then #this if statement checks if the guess letter is = answer letter
-			wordle_output+="$green${guess:c:1}$no_color"
-		elif [[ $answer == *"${guess:c:1}"* ]]; then
-			wordle_output+="$yellow${guess:c:1}$no_color"
-		else
-			wordle_output+="$no_color${guess:c:1}"
+
+		guess_letter=${guess:c:1}
+		answer_letter=${answer:c:1}
+
+		if [[ $guess_letter == "$answer_letter" ]]; then #this if statement checks if the guess letter is = answer letter
+			wordle_output+="$green$guess_letter$no_color" #if the statement is true, it returns with the wordle output being added with a green letter
+		elif [[ $answer == *"$guess_letter"* ]]; then #this if statement checks if the letter is at least somewhere in the answer
+			wordle_output+="$yellow${guess:c:1}$no_color" #if the statement is true, it returns with the wordle output being added with a yellow letter
+		else #unless the statements dont follow any of the following
+			wordle_output+="$guess_letter" #unless it really doesnt come true for any of the if statements it comes back with a blank letter
 		fi
 	done
-	echo -e "$wordle_output\n"
-	wordle_output=""
-	((i++))
+	echo -e "$wordle_output\n" #says the output
+	wordle_output="" #resets output so it doesn't remain the same for the next loop
+	((i++)) #adds i so that a try has been used.
 }
 
 exit_or_continue_game(){
@@ -89,10 +94,10 @@ exit_or_continue_game(){
 		start_of_game
 		;;
 		n|N|no|No) echo -e "\nYou have chosen to exit the game, goodbye!"
+		exit
 		;;
 		*) read -p "Please re-enter your answer:" continue_playing
 		exit_or_continue_game
-		exit
 	esac
 }
 
