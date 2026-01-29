@@ -3,7 +3,6 @@
 filepath="/home/gamerwolf4512/Documents/Part2OfProject/word_library" #file path to the word library.
 
 wordle_output=""
-used_letters="......"
 
 #colors
 no_color="\e[0m"
@@ -27,7 +26,7 @@ guess_word_tries(){
 	for (( i=1; i<6; )); do #loops for every unless i is greater then 6. i is supposed to represent the gueses
 		read -p "Type word here ($i): " guess #reads users guess and i indicates what attempt there on
 		check_if_word_is_in_limit
-		if [ $i == 6 ]; then
+		if [ $i == 6 ]; then #this checks if i is equal to 6 guesses, if so then it tells the user their guesses are done and gives them the option to reset
 			echo -e "You have failed to find the word!\nThe word was $answer\nWould you like to play again? Yes(Y) No(N)"
 			exit_or_continue_game
 		fi
@@ -36,6 +35,7 @@ guess_word_tries(){
 
 check_if_word_is_in_limit(){
 	if [ ${#guess} == 5 ]; then #if the guess's length is 5, it will allow the user to continue
+		((i--))
 		check_if_word_is_in_word_library
 	else #if the guess is not any of the above, it will play this message
 		echo -e "What you typed in was over/under the limit\nPlease type in again!\n"
@@ -45,7 +45,7 @@ check_if_word_is_in_limit(){
 check_if_word_is_in_word_library(){
 	if [ -e $filepath/${guess::1}.sh ]; then #if the first letter in the word is valid, meaning it exists on the dictionary. It will allow the user to continue
 		check_if_word_is_in_dictionary
-	else #if the first letter is a value or symbol, it wont allow you to do anything.
+	else #if the first letter is a value or symbol, it wont allow you to do anything, however this logic is infact flawed because if you put a captial at the startm it will count it as a value. I wasn't able to fix this in time however I recognize this is an error
 		echo -e "What you typed in was a value/symbol.\nPlease type again!\n"
 	fi
 } #check if guess starts with a letter
@@ -69,36 +69,23 @@ word_from_answer(){
 }
 
 individually_check_letters(){
-	green_letters
-	yellow_letters
-	echo -e "$wordle_output" #says the output
+	for (( c=0; c<5; c++ )); do #loops for 5 times (for each letter)
+
+		guess_letter=${guess:c:1}
+		answer_letter=${answer:c:1}
+
+		if [[ $guess_letter == "$answer_letter" ]]; then #this if statement checks if the guess letter is = answer letter
+			wordle_output+="$green$guess_letter$no_color" #if the statement is true, it returns with the wordle output being added with a green letter
+		elif [[ $answer == *"$guess_letter"* ]]; then #this if statement checks if the letter is at least somewhere in the answer
+			wordle_output+="$yellow$guess_letter$no_color" #if the statement is true, it returns with the wordle output being added with a yellow letter however this is also flawed since it looks at duplicated letters too, such as not counting if it looks a letter alreaddy
+		else #unless the statements dont follow any of the following
+			wordle_output+="$guess_letter" #unless it really doesnt come true for any of the if statements it comes back with a blank letter
+		fi
+	done
+	echo -e "$wordle_output\n" #says the output
 	wordle_output="" #resets output so it doesn't remain the same for the next loop
 	((i++)) #adds i so that a try has been used.
 }
-
-green_letters() {
-	for (( c=0; c<5; c++ )); do
-		guess_letter=${guess:c:1}
-		answer_letter=${answer:c:1}
-		if [[ $guess_letter == "$answer_letter" ]]; then
-			wordle_output[c]="$green$guess_letter$no_color"
-		else
-			wordle_output[c]="$guess_letter"
-		fi
-	done
-}
-
-yellow_letters() {
-	for (( c=0; c<5; c++ )); do
-		guess_letter=${guess:c:1}
-		if [[ $answer == *"$guess_letter"* && $remaining_answer == *"$guess_letters"* ]]; then
-			wordle_output[c]="$yellow$guess_letter$no_color" 
-			remaining_answer=${answer/"$guess_letter"/_}
-		fi
-	done
-}
-
-
 
 exit_or_continue_game(){
 	case $continue_playing in #case statement that determines what the user chooses to do
