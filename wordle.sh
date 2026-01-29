@@ -76,7 +76,7 @@ individually_check_letters(){
 		if [[ $guess_letter == "$answer_letter" ]]; then #this if statement checks if the guess letter is = answer letter
 			wordle_output+="$green$guess_letter$no_color" #if the statement is true, it returns with the wordle output being added with a green letter
 		elif [[ $answer == *"$guess_letter"* ]]; then #this if statement checks if the letter is at least somewhere in the answer
-			wordle_output+="$yellow${guess:c:1}$no_color" #if the statement is true, it returns with the wordle output being added with a yellow letter
+			wordle_output+="$yellow$guess_letter$no_color" #if the statement is true, it returns with the wordle output being added with a yellow letter
 		else #unless the statements dont follow any of the following
 			wordle_output+="$guess_letter" #unless it really doesnt come true for any of the if statements it comes back with a blank letter
 		fi
@@ -87,17 +87,18 @@ individually_check_letters(){
 }
 
 exit_or_continue_game(){
-	case $continue_playing in
-		y|Y|yes|Yes) echo -e "\nThe game will start again then!"
-		((i=6))
+	case $continue_playing in #case statement that determines what the user chooses to do
+		y|Y|yes|Yes) echo -e "\nThe game will start again then!" #if user says any of the following options, it will restart the game
+		((i=6)) #makes sure to make i=6 so that for loop ends.
 		sleep 2
 		start_of_game
 		;;
-		n|N|no|No) echo -e "\nYou have chosen to exit the game, goodbye!"
-		exit
+		n|N|no|No) echo -e "\nYou have chosen to exit the game, goodbye!" #if the user says any of the following options, it will end the game
+		exit #exits code
 		;;
-		*) read -p "Please re-enter your answer:" continue_playing
+		*) read -p "Please re-enter your answer:" continue_playing #if user says anything else it will force the user to type in the answer and repeat.
 		exit_or_continue_game
+		;;
 	esac
 }
 
