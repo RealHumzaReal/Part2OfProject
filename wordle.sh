@@ -3,6 +3,7 @@
 filepath="/home/gamerwolf4512/Documents/Part2OfProject/word_library" #file path to the word library.
 
 wordle_output=""
+used_letters="......"
 
 #colors
 no_color="\e[0m"
@@ -80,9 +81,9 @@ green_letters() {
 		guess_letter=${guess:c:1}
 		answer_letter=${answer:c:1}
 		if [[ $guess_letter == "$answer_letter" ]]; then
-			wordle_output+="$green$guess_letter$no_color"
+			wordle_output[c]="$green$guess_letter$no_color"
 		else
-			wordle_output+="$guess_letter"
+			wordle_output[c]="$guess_letter"
 		fi
 	done
 }
@@ -90,8 +91,9 @@ green_letters() {
 yellow_letters() {
 	for (( c=0; c<5; c++ )); do
 		guess_letter=${guess:c:1}
-		if [[ $answer == *"$guess_letter"* ]]; then
-			wordle_output+="$yellow$guess_letter$no_color" 
+		if [[ $answer == *"$guess_letter"* && $remaining_answer == *"$guess_letters"* ]]; then
+			wordle_output[c]="$yellow$guess_letter$no_color" 
+			remaining_answer=${answer/"$guess_letter"/_}
 		fi
 	done
 }
