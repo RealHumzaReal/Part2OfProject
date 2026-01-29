@@ -68,23 +68,35 @@ word_from_answer(){
 }
 
 individually_check_letters(){
-	for (( c=0; c<5; c++ )); do #loops for 5 times (for each letter)
-
-		guess_letter=${guess:c:1}
-		answer_letter=${answer:c:1}
-
-		if [[ $guess_letter == "$answer_letter" ]]; then #this if statement checks if the guess letter is = answer letter
-			wordle_output+="$green$guess_letter$no_color" #if the statement is true, it returns with the wordle output being added with a green letter
-		elif [[ $answer == *"$guess_letter"* ]]; then #this if statement checks if the letter is at least somewhere in the answer
-			wordle_output+="$yellow$guess_letter$no_color" #if the statement is true, it returns with the wordle output being added with a yellow letter
-		else #unless the statements dont follow any of the following
-			wordle_output+="$guess_letter" #unless it really doesnt come true for any of the if statements it comes back with a blank letter
-		fi
-	done
-	echo -e "$wordle_output\n" #says the output
+	green_letters
+	yellow_letters
+	echo -e "$wordle_output" #says the output
 	wordle_output="" #resets output so it doesn't remain the same for the next loop
 	((i++)) #adds i so that a try has been used.
 }
+
+green_letters() {
+	for (( c=0; c<5; c++ )); do
+		guess_letter=${guess:c:1}
+		answer_letter=${answer:c:1}
+		if [[ $guess_letter == "$answer_letter" ]]; then
+			wordle_output+="$green$guess_letter$no_color"
+		else
+			wordle_output+="$guess_letter"
+		fi
+	done
+}
+
+yellow_letters() {
+	for (( c=0; c<5; c++ )); do
+		guess_letter=${guess:c:1}
+		if [[ $answer == *"$guess_letter"* ]]; then
+			wordle_output+="$yellow$guess_letter$no_color" 
+		fi
+	done
+}
+
+
 
 exit_or_continue_game(){
 	case $continue_playing in #case statement that determines what the user chooses to do
